@@ -22,10 +22,14 @@ vim.opt.background = 'dark'
 vim.g.gruvbox_contrast_dark = 'hard'
 vim.g.gruvbox_invert_selection = '0'
 vim.g.tokyonight_transparent_sidebar = true
+vim.g.netrw_fastbrowse = 0
 
 vim.api.nvim_set_hl(0, 'LineNR', { fg = '#2e2e2e' })
 vim.api.nvim_set_hl(0, 'Cursor', { bg = 'green', fg = 'green' })
 vim.api.nvim_set_hl(0, 'iCursor', { bg = 'blue', fg = 'blue' })
+vim.api.nvim_set_hl(0, 'lCursor', { bg = 'none', fg = 'none' })
+vim.api.nvim_set_hl(0, 'TermCursor', { bg = 'none', fg = 'none' })
 vim.api.nvim_set_hl(0, 'CursorLineNR', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'SignColumn', { bg = 'none' })
 vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+

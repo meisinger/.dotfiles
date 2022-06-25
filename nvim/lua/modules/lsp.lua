@@ -19,6 +19,10 @@ local attach = function(client, buffer)
         callback = vim.lsp.buf.hover,
         silent = true
     })
+    nnoremap(buffer, '<C-t>', '', {
+        callback = builtin.treesitter,
+        silent = true
+    })
     nnoremap(buffer, '<leader>ga', '', {
         callback = vim.lsp.buf.code_action,
         silent = true
@@ -76,6 +80,11 @@ lsp.html.setup({
 })
 
 lsp.cssls.setup({
+    on_attach = attach,
+    capabilities = caps
+})
+
+lsp.tsserver.setup({
     on_attach = attach,
     capabilities = caps
 })
