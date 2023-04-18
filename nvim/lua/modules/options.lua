@@ -40,3 +40,5 @@ o.foldenable = false
 o.foldlevel = 99
 wo.foldmethod = "expr"
 wo.foldexpr = "nvim_treesitter#foldexpr()"
+
+require('nvim-tree').setup()

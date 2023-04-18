@@ -11,7 +11,7 @@ nnoremap('<up>', '<nop>')
 nnoremap('<down>', '<nop>')
 nnoremap('<left>', '<nop>')
 nnoremap('<right>', '<nop>')
-nnoremap(';', ':')
+-- nnoremap(';', ':')
 nnoremap('p', 'gp')
 nnoremap('P', 'gP')
 nnoremap('Y', 'yg$')
@@ -28,7 +28,10 @@ nnoremap('<leader>w', ':bd<cr>')
 nnoremap('<leader>l', ':bn!<cr>')
 nnoremap('<leader>h', ':bp!<cr>')
 nnoremap('<leader>/', ':nohl<cr>')
+nnoremap('<C-s>', ':w<cr>')
+nnoremap('<M-s>', ':wa<cr>')
 
+nnoremap('<leader>sv', ':vnew<cr>:setlocal buftype=nofile bufhidden=wipe nobuflisted<cr>')
 
 vnoremap('J', ":m '>+1<cr>gv=gv")
 vnoremap('K', ":m '<-2<cr>gv=gv")
@@ -44,3 +47,6 @@ vmap('<leader>d', '"_d')
 nmap('<leader>p', '"+p')
 
 xnoremap('<leader>p', '"_dP')
+
+-- something to add later:
+-- :bp | sp | bn | bd

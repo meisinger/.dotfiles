@@ -35,7 +35,7 @@ require('telescope').setup {
 require('telescope').load_extension('fzf')
 require('telescope').load_extension('ui-select')
 require('telescope').load_extension('file_browser')
-require('telescope').load_extension('lazygit')
+-- require('telescope').load_extension('lazygit')
 
 nnoremap('<C-p>', ':Telescope find_files<cr>')
 nnoremap('<C-t>', ':Telescope lsp_dynamic_workspace_symbols<cr>')
