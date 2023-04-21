@@ -1,15 +1,12 @@
 -- globals
 local api = vim.api
-local cmd = vim.cmd
 local map = vim.keymap.set
-local lsp = vim.lsp
 local global_opt = vim.opt_global
 local diag = vim.diagnostic
 
 global_opt.clipboard = "unnamed"
 global_opt.timeoutlen = 200
 
-local lspconfig = require("lspconfig")
 local actions = require("telescope.actions")
 local telescope = require("telescope")
 telescope.setup({
@@ -38,115 +35,6 @@ map("c", "w!!", "%!sudo tee > /dev/null %", { noremap = true })
 
 local telescope_builtin = require('telescope.builtin')
 map("n", "<Leader>/", telescope_builtin.commands, { noremap = true, desc = "show commands" })
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-    local function mapB(mode, l, r, desc)
-        local opts = { noremap = true, silent = true, buffer = bufnr, desc = desc }
-        map(mode, l, r, opts)
-    end
-
-    -- Mappings.
-
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    mapB("n", "<leader>rn", lsp.buf.rename, "lsp rename")
-    mapB("n", "<leader>gD", lsp.buf.declaration, "lsp goto declaration")
-    mapB("n", "<leader>gd", telescope_builtin.lsp_definitions, "lsp goto definition")
-    mapB("n", "<leader>gi", telescope_builtin.lsp_implementations, "lsp goto implementation")
-    mapB("n", "<leader>f", lsp.buf.format, "lsp format")
-    mapB("n", "<leader>gs", telescope_builtin.lsp_document_symbols, "lsp document symbols")
-    mapB("n", "<Leader>gws", telescope_builtin.lsp_dynamic_workspace_symbols, "lsp workspace symbols")
-    mapB("n", "<leader>ca", lsp.buf.code_action, "lsp code action")
-
-    mapB("n", "K", lsp.buf.hover, "lsp hover")
-    mapB("n", "<Leader>gr", telescope_builtin.lsp_references, "lsp references")
-    mapB("n", "<leader>sh", lsp.buf.signature_help, "lsp signature")
-
-    if client.server_capabilities.documentFormattingProvider then
-        cmd([[
-            augroup LspFormatting
-                autocmd! * <buffer>
-                autocmd BufWritePre <buffer> lua vim.lsp.buf.format()
-            augroup END
-            ]])
-    end
-end
-
-local null_ls = require("null-ls")
-local spell_check_enabled = false
-null_ls.setup({
-    sources = {
-        null_ls.builtins.formatting.shfmt,
-        null_ls.builtins.formatting.prettier,
-        null_ls.builtins.diagnostics.eslint_d,
-        null_ls.builtins.code_actions.eslint_d,
-        null_ls.builtins.diagnostics.cspell.with({
-            -- Force the severity to be HINT
-            diagnostics_postprocess = function(diagnostic)
-                diagnostic.severity = diag.severity.HINT
-            end,
-        }),
-        null_ls.builtins.code_actions.cspell,
-        null_ls.builtins.code_actions.statix,
-        null_ls.builtins.diagnostics.statix,
-    },
-    on_attach = function(client, bufnr)
-        local function mapB(mode, l, r, desc)
-            local opts = { noremap = true, silent = true, buffer = bufnr, desc = desc }
-            map(mode, l, r, opts)
-        end
-    end,
-})
-if not spell_check_enabled then
-    null_ls.disable({ name = "cspell" })
-end
-map("n", "<leader>ss", function()
-    if spell_check_enabled then
-        null_ls.disable({ name = "cspell" })
-        spell_check_enabled = false
-    else
-        null_ls.enable({ name = "cspell" })
-        spell_check_enabled = true
-    end
-end, { desc = "toggle spell check", noremap = true })
-
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
--- local capabilities = vim.lsp.protocol.make_client_capabilities()
-local capabilities = require("cmp_nvim_lsp").default_capabilities()
-local servers = { "bashls", "vimls", "rnix", "yamlls", "lua_ls" }
-for _, lsp in ipairs(servers) do
-    lspconfig[lsp].setup({
-        on_attach = on_attach,
-        capabilities = capabilities,
-        -- after 150ms of no calls to lsp, send call
-        -- compare with throttling that is done by default in compe
-        -- flags = {
-        --   debounce_text_changes = 150,
-        -- }
-    })
-end
-
-local capabilities_no_format = lsp.protocol.make_client_capabilities()
-capabilities_no_format.textDocument.formatting = false
-capabilities_no_format.textDocument.rangeFormatting = false
-capabilities_no_format.textDocument.range_formatting = false
-
-require("lspconfig")["tsserver"].setup({
-    on_attach = function(client, buffer)
-        client.resolved_capabilities.document_formatting = false
-        client.resolved_capabilities.document_range_formatting = false
-        on_attach(client, buffer)
-    end,
-    capabilities = capabilities_no_format,
-    cmd = {
-        tsserver_path,
-        "--stdio",
-        "--tsserver-path",
-        typescript_path
-    }
-})
 
 local hocon_group = api.nvim_create_augroup("hocon", { clear = true })
 api.nvim_create_autocmd(
@@ -258,6 +146,7 @@ require("Comment").setup()
 -- luasnip setup
 local luasnip = require("luasnip")
 require("luasnip.loaders.from_vscode").lazy_load()
+
 -- nvim-cmp setup
 local lspkind = require("lspkind")
 local cmp = require("cmp")

@@ -17,6 +17,7 @@ in
       pkgs.lua-language-server
       pkgs.stylua
       pkgs.shfmt
+      pkgs.statix
       pkgs.nodePackages.eslint
       pkgs.nodePackages.prettier
       pkgs.nodePackages.cspell
@@ -27,10 +28,13 @@ in
       lua << EOF
         local tsserver_path = "${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server"
         local typescript_path = "${pkgs.nodePackages.typescript}/lib/node_modules/typescript/lib"
+        local omnisharp_bin = "${pkgs.omnisharp-roslyn}/bin/omnisharp"
+
         ${builtins.readFile ./init.lua}
-        ${builtins.readFile ./lua_scripts/options.lua}
-        ${builtins.readFile ./lua_scripts/mappings.lua}
-        ${builtins.readFile ./lua_scripts/configuration.lua}
+        ${builtins.readFile ./lua/scripts/options.lua}
+        ${builtins.readFile ./lua/scripts/mappings.lua}
+        ${builtins.readFile ./lua/scripts/configuration.lua}
+        ${builtins.readFile ./lua/scripts/lsp.lua}
       EOF
     '';
     plugins = with pkgs.vimPlugins; [
@@ -50,6 +54,7 @@ in
       popup-nvim
       lualine-nvim
       nvim-gps
+      nvim-notify
       comment-nvim
 
       telescope-nvim
