@@ -1,3 +1,6 @@
+require('mason').setup()
+require('mason-lspconfig').setup()
+
 local lsp = require('lspconfig')
 local util = require('lspconfig.util')
 local builtin = require('telescope.builtin')
@@ -57,20 +60,16 @@ local attach = function(client, buffer)
     --})
 end
 
-lsp.csharp_ls.setup({
-    on_attach = attach,
-    root_dir = util.root_pattern('*.csproj')
-})
-
-lsp.rust_analyzer.setup({
+local omni_pid = vim.fn.getpid()
+lsp.omnisharp.setup({
     on_attach = attach,
     capabilities = caps,
-    settings = {
-        ['rust-analyzer'] = {
-            checkOnSave = {
-                command = 'clippy'
-            }
-        }
+    cmd = { vim.g.config_omnisharp_bin, '--languageserver', '--hostpid', tostring(omni_pid) },
+    root_dir = function (path)
+        return util.root_pattern('*.sln')(path) or util.root_pattern('*.csproj')(path)
+    end,
+    handlers = {
+        ['textdocument/definition'] = require('omnisharp_extended').handler
     }
 })
 
